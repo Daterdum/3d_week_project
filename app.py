@@ -14,18 +14,26 @@ days = {"mon": "Понедельник",
 
 @app.route('/')
 def index():
-    ids = sample(range(11), k=3)
+    ids = sample(range(11), k=6)
     teachers = []
     with open('data.json') as f:
         temp_teachers = json.load(f)[1]
-        print(temp_teachers)
         teachers = [x for x in temp_teachers if x['id'] in ids]
     return render_template("index.html", teachers=teachers)
 
 
-@app.route('/goals/<goal>/')
-def goal():
-    return render_template('goal.html')
+@app.route('/goal/<goal>/')
+def goal(goal):
+    teachers_by_goal = []
+    with open('data.json') as f:
+        goals = json.load(f)[0]
+    with open('data.json') as f:
+        data = json.load(f)[1]
+        for teacher in data:
+            if goal in teacher['goals']:
+                teachers_by_goal.append(teacher)
+    # insert sorting by rating for teachers here
+    return render_template('goal.html', teachers=teachers_by_goal, goal=goals[goal])
 
 
 @app.route('/profiles/<int:id>/')
@@ -52,6 +60,11 @@ def request_done():
     time = request.form.get('time')
     name = request.form.get('u_name')
     phone = request.form.get('u_phone')
+    with open('request.json') as f:
+        data = json.load(f)
+        data.append({'goal': goal, 'time': time, 'name': name, 'phone': phone})
+    with open('request.json', 'w') as f:
+        json.dump(data, f)
     with open('data.json') as f:
         data = json.load(f)
         goals = data[0]
