@@ -12,19 +12,15 @@ def py_to_json():
 
 def add_goal_to_teachers(ids, goal):
     with open('data.json') as f:
-        teachers = json.load(f)[1]
-    for teacher in teachers:
-        if teacher['id'] in ids:
-            teachers[teacher['id']]['goals'].append(goal)
+        teachers = json.load(f)
+    for teacher in teachers[1]:
+        if int(teacher['id']) in ids:
+            teachers[1][teacher['id']]['goals'].append(goal)
     with open('data.json', 'w') as f:
         json.dump(teachers, f)
 
 
-def main():
-    add_goal_to_teachers()
-
-
 if __name__ == "__main__":
-    main()
+    pass
 
 

@@ -12,19 +12,36 @@ days = {"mon": "Понедельник",
         "sun": "Воскресенье"}
 
 
+def sort_by_rating(teachers_by_goal):
+    teachers = teachers_by_goal
+    has_changed = True
+    while has_changed:
+        has_changed = False
+        for i, teacher in enumerate(teachers):
+            if teacher['id'] == teachers[-1]['id']:
+                continue
+            if teacher['rating'] < teachers[i+1]['rating']:
+                temp = teacher
+                teachers[i] = teachers[i+1]
+                teachers[i+1] = temp
+                has_changed = True
+    return teachers
+
+
 @app.route('/')
 def index():
     ids = sample(range(11), k=6)
-    teachers = []
     with open('data.json') as f:
         temp_teachers = json.load(f)[1]
         teachers = [x for x in temp_teachers if x['id'] in ids]
+    teachers = sort_by_rating(teachers)
     return render_template("index.html", teachers=teachers)
 
 
 @app.route('/goal/<goal>/')
 def goal(goal):
     teachers_by_goal = []
+    has_changed = True
     with open('data.json') as f:
         goals = json.load(f)[0]
     with open('data.json') as f:
@@ -32,7 +49,7 @@ def goal(goal):
         for teacher in data:
             if goal in teacher['goals']:
                 teachers_by_goal.append(teacher)
-    # insert sorting by rating for teachers here
+    teachers_by_goal = sort_by_rating(teachers_by_goal)
     return render_template('goal.html', teachers=teachers_by_goal, goal=goals[goal])
 
 
