@@ -10,3 +10,7 @@ def py_to_json():
         json.dump(lst, f)
 
 
+if __name__ == "__main__":
+    py_to_json()
+
+
