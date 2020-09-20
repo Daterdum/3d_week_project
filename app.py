@@ -118,5 +118,12 @@ def booking_done():
     return render_template('booking_done.html', dotw=dotw, time=time, name=name, phone=phone, teacher=teacher, days=days)
 
 
+@app.route('/teachers')
+def teachers_tab():
+    with open('data.json') as f:
+        data = json.load(f)[1]
+    return render_template('teachers.html', teachers=data)
+
+
 if __name__ == '__main__':
     app.run()
