@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import script
 
 app = Flask(__name__)
 
@@ -39,4 +40,5 @@ def booking_done():
 
 
 if __name__ == '__main__':
+    script.py_to_json()
     app.run()
