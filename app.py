@@ -42,7 +42,7 @@ def profile(id):
 
 
 @app.route('/request/')
-def request():
+def request_edu():
     return render_template('request.html')
 
 
@@ -51,14 +51,34 @@ def request_done():
     return render_template('request_done.html')
 
 
-@app.route('/booking/<id>/<dotw>/<time>/')
+@app.route('/booking/<int:id>/<dotw>/<time>/')
 def booking(id, dotw, time):
-    return render_template('booking.html')
+    with open('data.json') as f:
+        teachers = json.load(f)[1]
+        for temp_teacher in teachers:
+            if temp_teacher['id'] == id:
+                teacher = temp_teacher
+    return render_template('booking.html', id=id, dotw=dotw, time=time, teacher=teacher, days=days)
 
 
-@app.route('/booking_done/')
+@app.route('/booking_done/', methods=['POST'])
 def booking_done():
-    return render_template('booking_done.html')
+    dotw = request.form.get('clientWeekday')
+    time = request.form.get('clientTime')
+    teacher_id = request.form.get('clientTeacher')
+    name = request.form.get('clientName')
+    phone = request.form.get('clientPhone')
+    with open('booking.json') as f:
+        data = json.load(f)
+        data.append({'dotw': dotw, 'time': time, 'teacher_id': teacher_id, 'name': name, 'phone': phone})
+    with open('booking.json', 'w') as file:
+        json.dump(data, file)
+    with open('data.json') as f:
+        teachers = json.load(f)[1]
+        for temp_teacher in teachers:
+            if temp_teacher['id'] == int(teacher_id):
+                teacher = temp_teacher
+    return render_template('booking_done.html', dotw=dotw, time=time, name=name, phone=phone, teacher=teacher, days=days)
 
 
 if __name__ == '__main__':
