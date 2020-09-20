@@ -42,13 +42,20 @@ def profile(id):
 
 
 @app.route('/request/')
-def request_edu():
+def request_():
     return render_template('request.html')
 
 
-@app.route('/request_done/')
+@app.route('/request_done/', methods=['POST'])
 def request_done():
-    return render_template('request_done.html')
+    goal = request.form.get('goal')
+    time = request.form.get('time')
+    name = request.form.get('u_name')
+    phone = request.form.get('u_phone')
+    with open('data.json') as f:
+        data = json.load(f)
+        goals = data[0]
+    return render_template('request_done.html', goal=goal, time=time, name=name, phone=phone, goals=goals)
 
 
 @app.route('/booking/<int:id>/<dotw>/<time>/')
