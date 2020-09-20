@@ -1,1 +1,2 @@
-before starting program launch 3 scripts from scripts.py (explained in file)
+extra scripts in scrips.py
+py_to_json already used, others are optional
